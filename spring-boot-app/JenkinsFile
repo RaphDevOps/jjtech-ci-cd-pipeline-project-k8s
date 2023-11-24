@@ -92,7 +92,7 @@ pipeline {
         SONAR_URL = "http://172.31.50.28:9000/"
       }
       steps {
-        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_AUTH_TOKEN')]) {
+        withCredentials([string(credentialsId: 'sonarqubeID', variable: 'SONAR_AUTH_TOKEN')]) {
           sh 'cd spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
         }
       }
@@ -100,7 +100,7 @@ pipeline {
 
     stage('Upload artifact to Nexus') {
        steps {
-           withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
+           withCredentials([usernamePassword(credentialsId: 'nexusID', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
            sh "sed -i \"s/.*<username><\\/username>/<username>$USER_NAME<\\/username>/g\" ${WORKSPACE}/nexus-setup/settings.xml"
            sh "sed -i \"s/.*<password><\\/password>/<password>$PASSWORD<\\/password>/g\" ${WORKSPACE}/nexus-setup/settings.xml"
            sh 'sudo cp ${WORKSPACE}/nexus-setup/settings.xml /var/lib/jenkins/.m2'
@@ -113,7 +113,7 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       environment {
-        awsAccountId = '389029577690'
+        awsAccountId = '5327-1133-6638'
         region = 'us-east-1'
         repositoryName = 'jjtech-demo'
         dockerImageTag = "${BUILD_NUMBER}"
